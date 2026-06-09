@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Akash Coin - Click to Earn</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🪙 Akash Coin</h1>
+            <p class="subtitle">Click to earn AKC tokens</p>
+        </header>
+
+        <div class="stats-section">
+            <div class="stat-card">
+                <span class="stat-label">Total Balance</span>
+                <div class="balance" id="coins">0</div>
+                <span class="stat-unit">AKC</span>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">Coins/Click</span>
+                <div class="balance" id="cps">1</div>
+                <span class="stat-unit">AKC/tap</span>
+            </div>
+        </div>
+
+        <div class="coin-container">
+            <img 
+                class="coin" 
+                id="coinImage"
+                src="https://cdn-icons-png.flaticon.com/512/272/272525.png"
+                alt="Click to mine coin"
+                onclick="mineCoin()"
+            >
+            <div class="tap-indicator" id="tapIndicator"></div>
+        </div>
+
+        <div class="info-cards">
+            <div class="card">
+                <h3>💡 How to Play</h3>
+                <p>Tap the coin to earn AKC tokens</p>
+            </div>
+            <div class="card">
+                <h3>🎁 Referral Bonus</h3>
+                <p>Earn +100 AKC per referral</p>
+            </div>
+            <div class="card">
+                <h3>⚡ Upgrades</h3>
+                <p>Coming soon...</p>
+            </div>
+        </div>
+
+        <div class="upgrades-section">
+            <h2>🚀 Upgrades</h2>
+            <div class="upgrades-grid">
+                <button class="upgrade-btn" id="doubleEarnings" onclick="buyUpgrade('double')">
+                    <span class="upgrade-icon">2️⃣</span>
+                    <span class="upgrade-name">Double Earnings</span>
+                    <span class="upgrade-cost" id="doubleCost">500 AKC</span>
+                </button>
+                <button class="upgrade-btn" id="autoClicker" onclick="buyUpgrade('auto')">
+                    <span class="upgrade-icon">⚙️</span>
+                    <span class="upgrade-name">Auto Clicker</span>
+                    <span class="upgrade-cost" id="autoCost">1000 AKC</span>
+                </button>
+                <button class="upgrade-btn" id="tripleEarnings" onclick="buyUpgrade('triple')">
+                    <span class="upgrade-icon">3️⃣</span>
+                    <span class="upgrade-name">Triple Earnings</span>
+                    <span class="upgrade-cost" id="tripleCost">2000 AKC</span>
+                </button>
+            </div>
+        </div>
+
+        <footer>
+            <button class="reset-btn" onclick="resetGame()">Reset Game</button>
+            <p class="version">v1.0.0 | Akash Coin</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
