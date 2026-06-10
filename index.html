@@ -3,153 +3,513 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AKASH COIN v2.0</title>
-
-<link rel="stylesheet" href="styles.css">
+<title>AKASH COIN - Telegram Bot</title>
 
 <style>
-body{
-margin:0;
-font-family:Arial,sans-serif;
-background:linear-gradient(135deg,#050816,#111827);
-color:white;
+* {
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.top{
-padding:20px;
-text-align:center;
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #0f1419;
+  color: white;
+  overflow-x: hidden;
 }
 
-.logo{
-width:140px;
-animation:spin 8s linear infinite;
+.app-container {
+  max-width: 100%;
+  background: linear-gradient(135deg, #0f1419 0%, #1a1f2e 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
-@keyframes spin{
-100%{transform:rotate(360deg);}
+/* Header */
+.header {
+  background: linear-gradient(90deg, #1f2937 0%, #111827 100%);
+  padding: 16px 20px;
+  text-align: center;
+  border-bottom: 1px solid #374151;
 }
 
-h1{
-font-size:35px;
-color:gold;
-margin-top:10px;
+.header h1 {
+  font-size: 24px;
+  color: #fbbf24;
+  margin-bottom: 8px;
 }
 
-.balance{
-font-size:45px;
-font-weight:bold;
-margin:20px;
+.header p {
+  font-size: 13px;
+  color: #9ca3af;
 }
 
-.coin{
-width:220px;
-cursor:pointer;
-transition:.2s;
+/* Main Content */
+.content {
+  flex: 1;
+  padding: 20px;
+  padding-bottom: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.coin:active{
-transform:scale(.9);
+/* Balance Card */
+.balance-card {
+  width: 100%;
+  background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+  border-radius: 16px;
+  padding: 24px;
+  text-align: center;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 16px rgba(251, 191, 36, 0.2);
 }
 
-.center{
-text-align:center;
+.balance-card .label {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.7);
+  margin-bottom: 8px;
+  font-weight: 500;
 }
 
-.btn{
-background:gold;
-color:black;
-padding:15px;
-border:none;
-border-radius:15px;
-font-size:18px;
-width:90%;
-margin:10px;
-cursor:pointer;
-outline: none;
+.balance-card .amount {
+  font-size: 42px;
+  color: black;
+  font-weight: 700;
+  margin-bottom: 4px;
 }
 
-.btn:hover{
-background:#ffd700;
+.balance-card .currency {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.6);
 }
 
-.btn:focus{
-outline: none;
-box-shadow: none;
+/* Clicker Section */
+.clicker-section {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 24px;
 }
 
-.btn:active{
-outline: none;
-box-shadow: none;
+.coin-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 20px;
+  transition: transform 0.1s ease;
 }
 
-.menu{
-position:fixed;
-bottom:0;
-width:100%;
-display:flex;
-justify-content:space-around;
-background:#0f172a;
-padding:15px;
+.coin-button:active {
+  transform: scale(0.95);
 }
 
-.menu a{
-color:white;
-text-decoration:none;
-font-size:18px;
+.coin-icon {
+  width: 240px;
+  height: 240px;
+  background: radial-gradient(circle at 30% 30%, #fcd34d, #fbbf24, #d97706);
+  border-radius: 50%;
+  box-shadow: 0 12px 24px rgba(251, 191, 36, 0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 120px;
+  margin-bottom: 16px;
 }
 
-*{
--webkit-tap-highlight-color: transparent;
+.per-click {
+  font-size: 13px;
+  color: #9ca3af;
+  margin-top: 12px;
+}
+
+/* Tabs */
+.tabs {
+  width: 100%;
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+  border-radius: 12px;
+  background: #1f2937;
+  padding: 4px;
+}
+
+.tab {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  background: transparent;
+  color: #9ca3af;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.tab.active {
+  background: #fbbf24;
+  color: black;
+}
+
+/* Sections */
+.section {
+  display: none;
+  width: 100%;
+}
+
+.section.active {
+  display: block;
+}
+
+/* Task Item */
+.task-item {
+  background: #1f2937;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #374151;
+}
+
+.task-info h3 {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.task-info p {
+  font-size: 13px;
+  color: #9ca3af;
+}
+
+.reward {
+  background: #fbbf24;
+  color: black;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 14px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.reward:active {
+  transform: scale(0.95);
+}
+
+.reward.completed {
+  background: #6b7280;
+  cursor: not-allowed;
+  color: #d1d5db;
+}
+
+/* Bottom Menu */
+.bottom-menu {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #1f2937;
+  border-top: 1px solid #374151;
+  display: flex;
+  justify-content: space-around;
+  padding: 8px 0;
+  z-index: 100;
+}
+
+.menu-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  color: #9ca3af;
+  text-decoration: none;
+  font-size: 12px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  gap: 4px;
+  transition: all 0.3s ease;
+}
+
+.menu-item.active {
+  color: #fbbf24;
+}
+
+.menu-item:active {
+  transform: scale(0.9);
+}
+
+/* Notifications */
+.notification {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  right: 20px;
+  background: #fbbf24;
+  color: black;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-weight: 600;
+  animation: slideIn 0.3s ease;
+  z-index: 200;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Safe Area */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+    padding-bottom: max(0px, env(safe-area-inset-bottom));
+  }
 }
 </style>
-
 </head>
 
 <body>
 
-<div class="top">
+<div class="app-container">
 
-<img src="https://img.icons8.com/color/96/000000/bitcoin.png" class="logo" alt="AKASH Logo">
+  <!-- Header -->
+  <div class="header">
+    <h1>💰 AKASH COIN</h1>
+    <p>Telegram Bot Coin Clicker</p>
+  </div>
 
-<h1>AKASH COIN</h1>
+  <!-- Main Content -->
+  <div class="content">
+    
+    <!-- Balance Card -->
+    <div class="balance-card">
+      <div class="label">SIZNING BALANS</div>
+      <div class="amount" id="totalBalance">0</div>
+      <div class="currency">AKC COINS</div>
+    </div>
 
-<div class="balance" id="coins">0 AKC</div>
+    <!-- Clicker -->
+    <div class="clicker-section">
+      <button class="coin-button" onclick="mineCoin()">
+        <div class="coin-icon">💰</div>
+      </button>
+      <div class="per-click">Har bir bosish: <strong id="perClick">1</strong> AKC</div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('mine')">⚡ Mine</button>
+      <button class="tab" onclick="switchTab('earn')">🎁 Earn</button>
+      <button class="tab" onclick="switchTab('friends')">👥 Friends</button>
+    </div>
+
+    <!-- Mine Section -->
+    <div id="mine" class="section active">
+      <div class="task-item">
+        <div class="task-info">
+          <h3>💎 Boshlang'ich Upgrade</h3>
+          <p>Har bir bosishda +0.5 AKC</p>
+        </div>
+        <button class="reward" onclick="buyUpgrade('basic', 100)">100 AKC</button>
+      </div>
+      
+      <div class="task-item">
+        <div class="task-info">
+          <h3>⭐ O'rta Upgrade</h3>
+          <p>Har bir bosishda +2 AKC</p>
+        </div>
+        <button class="reward" onclick="buyUpgrade('medium', 500)">500 AKC</button>
+      </div>
+
+      <div class="task-item">
+        <div class="task-info">
+          <h3>👑 Premium Upgrade</h3>
+          <p>Har bir bosishda +5 AKC</p>
+        </div>
+        <button class="reward" onclick="buyUpgrade('premium', 1000)">1000 AKC</button>
+      </div>
+    </div>
+
+    <!-- Earn Section -->
+    <div id="earn" class="section">
+      <div class="task-item">
+        <div class="task-info">
+          <h3>🔗 Telegram Kanalini Follow Et</h3>
+          <p>@AkashCoin kanaliga obuna bo'l</p>
+        </div>
+        <button class="reward" onclick="completeTask('channel', this)">+500 AKC</button>
+      </div>
+
+      <div class="task-item">
+        <div class="task-info">
+          <h3>💬 Telegram Gruppa</h3>
+          <p>Guruhmizga qo'shil va yangilikni bilib ol</p>
+        </div>
+        <button class="reward" onclick="completeTask('group', this)">+500 AKC</button>
+      </div>
+
+      <div class="task-item">
+        <div class="task-info">
+          <h3>⭐ Google Review</h3>
+          <p>Bizga 5 yulduzcha baho ber</p>
+        </div>
+        <button class="reward" onclick="completeTask('review', this)">+1000 AKC</button>
+      </div>
+
+      <div class="task-item">
+        <div class="task-info">
+          <h3>🎮 Bizni Share Et</h3>
+          <p>Do'stlaringizga ulashing</p>
+        </div>
+        <button class="reward" onclick="completeTask('share', this)">+250 AKC</button>
+      </div>
+    </div>
+
+    <!-- Friends Section -->
+    <div id="friends" class="section">
+      <div class="task-item">
+        <div class="task-info">
+          <h3>👥 Referral Dastur</h3>
+          <p>Do'stni taklif et va 20% qazanch oling</p>
+        </div>
+        <button class="reward" onclick="copyReferralLink()">📋 Nusxala</button>
+      </div>
+
+      <div id="friendsList" style="margin-top: 16px;"></div>
+    </div>
+
+  </div>
 
 </div>
 
-<div class="center">
-
-<img src="https://img.icons8.com/color/256/000000/bitcoin.png" class="coin" onclick="mineCoin()" alt="Mining Coin">
-
-<br>
-
-<button class="btn">
-🚀 Upgrade
-</button>
-
-<button class="btn">
-🎁 Referral
-</button>
-
-<button class="btn">
-💰 Wallet
-</button>
-
+<!-- Bottom Menu -->
+<div class="bottom-menu">
+  <button class="menu-item active" onclick="switchMenu('mine')">⚡<div>Mine</div></button>
+  <button class="menu-item" onclick="switchMenu('earn')">🎁<div>Earn</div></button>
+  <button class="menu-item" onclick="switchMenu('friends')">👥<div>Friends</div></button>
+  <button class="menu-item" onclick="switchMenu('profile')">👤<div>Profile</div></button>
 </div>
 
-<div class="menu">
+<script>
+let userData = {
+  balance: localStorage.getItem('akashBalance') ? parseInt(localStorage.getItem('akashBalance')) : 0,
+  perClick: localStorage.getItem('akashPerClick') ? parseInt(localStorage.getItem('akashPerClick')) : 1,
+  completedTasks: localStorage.getItem('akashTasks') ? JSON.parse(localStorage.getItem('akashTasks')) : [],
+  referrals: localStorage.getItem('akashReferrals') ? JSON.parse(localStorage.getItem('akashReferrals')) : []
+};
 
-<a href="#">🏠 Home</a>
+function updateUI() {
+  document.getElementById('totalBalance').textContent = userData.balance.toLocaleString();
+  document.getElementById('perClick').textContent = userData.perClick;
+  localStorage.setItem('akashBalance', userData.balance);
+  localStorage.setItem('akashPerClick', userData.perClick);
+}
 
-<a href="#">⚡ Mine</a>
+function mineCoin() {
+  userData.balance += userData.perClick;
+  updateUI();
+  
+  // Animatsiya
+  const notification = document.createElement('div');
+  notification.className = 'notification';
+  notification.textContent = '+' + userData.perClick + ' AKC';
+  document.body.appendChild(notification);
+  
+  setTimeout(() => notification.remove(), 1500);
+}
 
-<a href="#">👥 Friends</a>
+function switchTab(tabName) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(tabName).classList.add('active');
+  event.target.classList.add('active');
+}
 
-<a href="#">👤 Profile</a>
+function switchMenu(menu) {
+  document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+  event.target.closest('.menu-item').classList.add('active');
+  
+  if (menu === 'profile') {
+    showProfile();
+  }
+}
 
-</div>
+function buyUpgrade(type, cost) {
+  if (userData.balance >= cost) {
+    userData.balance -= cost;
+    
+    if (type === 'basic') userData.perClick += 0.5;
+    else if (type === 'medium') userData.perClick += 2;
+    else if (type === 'premium') userData.perClick += 5;
+    
+    updateUI();
+    showNotification('Upgrade tayyorlandi! 🎉');
+  } else {
+    showNotification('Yetarli AKC yo\'q! ❌');
+  }
+}
 
-<script src="script.js"></script>
+function completeTask(taskName, button) {
+  if (userData.completedTasks.includes(taskName)) {
+    showNotification('Bu vazifani allaqachon amalga oshirdingiz! ✓');
+    return;
+  }
+  
+  userData.completedTasks.push(taskName);
+  localStorage.setItem('akashTasks', JSON.stringify(userData.completedTasks));
+  
+  let reward = 500;
+  if (taskName === 'review') reward = 1000;
+  else if (taskName === 'share') reward = 250;
+  
+  userData.balance += reward;
+  updateUI();
+  
+  button.textContent = '✓ Bajarildi';
+  button.classList.add('completed');
+  button.disabled = true;
+  
+  showNotification('+' + reward + ' AKC qazandingiz! 🎉');
+}
+
+function copyReferralLink() {
+  const link = 'https://t.me/share/url?url=' + window.location.href + '&text=AKASH%20COIN%20-%20Pul%20qazanish%20bo%27yicha%20eng%20yaxshi%20ilova!';
+  navigator.clipboard.writeText(link);
+  showNotification('Havola nusxalandi! 📋');
+}
+
+function showNotification(text) {
+  const notification = document.createElement('div');
+  notification.className = 'notification';
+  notification.textContent = text;
+  document.body.appendChild(notification);
+  
+  setTimeout(() => notification.remove(), 2000);
+}
+
+function showProfile() {
+  alert(`👤 PROFIL\n\n💰 Balans: ${userData.balance} AKC\n📊 Bosishda: ${userData.perClick} AKC\n🎁 Bajarilgan vazifalar: ${userData.completedTasks.length}\n👥 Referrallar: ${userData.referrals.length}`);
+}
+
+updateUI();
+</script>
 
 </body>
 </html>
