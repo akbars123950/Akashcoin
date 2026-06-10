@@ -1,293 +1,172 @@
-// Game State
-let gameState = {
-    coins: localStorage.getItem("coins") ? parseInt(localStorage.getItem("coins")) : 0,
-    coinsPerClick: localStorage.getItem("coinsPerClick") ? parseInt(localStorage.getItem("coinsPerClick")) : 1,
-    doubleEarnings: localStorage.getItem("doubleEarnings") === "true",
-    tripleEarnings: localStorage.getItem("tripleEarnings") === "true",
-    autoClicker: localStorage.getItem("autoClicker") === "true",
-    autoClickerLevel: localStorage.getItem("autoClickerLevel") ? parseInt(localStorage.getItem("autoClickerLevel")) : 0,
+// AKASH COIN - Mining Game Logic
+
+// Initialize game data
+let gameData = {
+    coins: localStorage.getItem('akashCoins') ? parseInt(localStorage.getItem('akashCoins')) : 0,
+    coinsPerClick: localStorage.getItem('coinsPerClick') ? parseInt(localStorage.getItem('coinsPerClick')) : 1,
+    coinsPerSecond: localStorage.getItem('coinsPerSecond') ? parseInt(localStorage.getItem('coinsPerSecond')) : 0,
+    upgradeCost: localStorage.getItem('upgradeCost') ? parseInt(localStorage.getItem('upgradeCost')) : 10,
+    upgradeLevel: localStorage.getItem('upgradeLevel') ? parseInt(localStorage.getItem('upgradeLevel')) : 0,
+    autoMiners: localStorage.getItem('autoMiners') ? parseInt(localStorage.getItem('autoMiners')) : 0,
+    autoMinerCost: localStorage.getItem('autoMinerCost') ? parseInt(localStorage.getItem('autoMinerCost')) : 50,
+    referralBonus: localStorage.getItem('referralBonus') ? parseInt(localStorage.getItem('referralBonus')) : 0,
+    totalEarned: localStorage.getItem('totalEarned') ? parseInt(localStorage.getItem('totalEarned')) : 0
 };
 
-// Upgrade Costs
-const upgradeCosts = {
-    double: 500,
-    triple: 2000,
-    auto: 1000,
-};
-
-// Initialize Game
-document.addEventListener('DOMContentLoaded', function() {
-    updateDisplay();
-    loadUpgradeStates();
-    
-    if (gameState.autoClicker) {
-        startAutoClicker();
-    }
-});
-
-// Update Display
+// Update display
 function updateDisplay() {
-    document.getElementById('coins').innerText = formatNumber(gameState.coins);
-    document.getElementById('cps').innerText = gameState.coinsPerClick;
-    updateUpgradeButtons();
+    document.getElementById('coins').textContent = formatNumber(gameData.coins) + ' AKC';
+    saveGameData();
 }
 
 // Format large numbers
 function formatNumber(num) {
-    if (num >= 1000000) {
-        return (num / 1000000).toFixed(2) + 'M';
-    } else if (num >= 1000) {
-        return (num / 1000).toFixed(2) + 'K';
-    }
+    if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+    if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
     return num.toString();
 }
 
-// Mine Coin on Click
+// Mine coin function
 function mineCoin() {
-    let earnedCoins = gameState.coinsPerClick;
-    
-    if (gameState.doubleEarnings) {
-        earnedCoins *= 2;
-    }
-    
-    if (gameState.tripleEarnings) {
-        earnedCoins *= 3;
-    }
-    
-    gameState.coins += earnedCoins;
-    saveGameState();
+    gameData.coins += gameData.coinsPerClick;
+    gameData.totalEarned += gameData.coinsPerClick;
     updateDisplay();
-    
-    // Animate coin
-    animateCoin(earnedCoins);
-    animateCoinClick();
-    playSound();
+    createCoinAnimation();
 }
 
-// Animate Coin Click
-function animateCoinClick() {
-    const coinImage = document.getElementById('coinImage');
-    const tapIndicator = document.getElementById('tapIndicator');
-    
-    // Scale animation
-    coinImage.style.animation = 'none';
+// Coin animation effect
+function createCoinAnimation() {
+    const coin = document.querySelector('.coin');
+    coin.style.transform = 'scale(0.85)';
     setTimeout(() => {
-        coinImage.style.animation = '';
-    }, 10);
+        coin.style.transform = 'scale(1)';
+    }, 100);
     
-    // Tap pulse animation
-    tapIndicator.style.animation = 'none';
-    setTimeout(() => {
-        tapIndicator.style.animation = 'tapPulse 0.6s ease-out';
-    }, 10);
-}
-
-// Floating Text Animation
-function animateCoin(amount) {
-    const coin = document.getElementById('coinImage');
-    const rect = coin.getBoundingClientRect();
-    
+    // Floating text animation
     const floatingText = document.createElement('div');
-    floatingText.className = 'floating-text';
-    floatingText.innerText = '+' + formatNumber(amount);
-    floatingText.style.left = (rect.left + rect.width / 2) + 'px';
-    floatingText.style.top = (rect.top + rect.height / 2) + 'px';
-    
+    floatingText.textContent = '+' + gameData.coinsPerClick;
+    floatingText.style.position = 'fixed';
+    floatingText.style.left = '50%';
+    floatingText.style.top = '50%';
+    floatingText.style.color = '#FFD700';
+    floatingText.style.fontSize = '24px';
+    floatingText.style.fontWeight = 'bold';
+    floatingText.style.pointerEvents = 'none';
+    floatingText.style.animation = 'floatUp 1s ease-out forwards';
     document.body.appendChild(floatingText);
     
-    setTimeout(() => {
-        floatingText.remove();
-    }, 1000);
+    setTimeout(() => floatingText.remove(), 1000);
 }
 
-// Play Sound Effect
-function playSound() {
-    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-    const oscillator = audioContext.createOscillator();
-    const gainNode = audioContext.createGain();
-    
-    oscillator.connect(gainNode);
-    gainNode.connect(audioContext.destination);
-    
-    oscillator.frequency.value = 800;
-    oscillator.type = 'sine';
-    
-    gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.1);
-    
-    oscillator.start(audioContext.currentTime);
-    oscillator.stop(audioContext.currentTime + 0.1);
-}
-
-// Buy Upgrade
-function buyUpgrade(upgradeType) {
-    const cost = upgradeCosts[upgradeType];
-    
-    if (gameState.coins < cost) {
-        showNotification('Not enough AKC!');
-        return;
-    }
-    
-    gameState.coins -= cost;
-    
-    switch(upgradeType) {
-        case 'double':
-            if (!gameState.doubleEarnings) {
-                gameState.doubleEarnings = true;
-                gameState.coinsPerClick *= 2;
-                showNotification('Double Earnings Unlocked! 2️⃣');
-            }
-            break;
-        case 'triple':
-            if (!gameState.tripleEarnings) {
-                gameState.tripleEarnings = true;
-                gameState.coinsPerClick *= 3;
-                showNotification('Triple Earnings Unlocked! 3️⃣');
-            }
-            break;
-        case 'auto':
-            if (!gameState.autoClicker) {
-                gameState.autoClicker = true;
-                gameState.autoClickerLevel = 1;
-                startAutoClicker();
-                showNotification('Auto Clicker Activated! ⚙️');
-            } else {
-                gameState.autoClickerLevel++;
-                showNotification('Auto Clicker Level ' + gameState.autoClickerLevel + '!');
-            }
-            break;
-    }
-    
-    saveGameState();
-    updateDisplay();
-}
-
-// Auto Clicker
-function startAutoClicker() {
-    setInterval(() => {
-        if (gameState.autoClicker) {
-            let autoCoins = gameState.autoClickerLevel * 0.5;
-            
-            if (gameState.doubleEarnings) {
-                autoCoins *= 2;
-            }
-            
-            if (gameState.tripleEarnings) {
-                autoCoins *= 3;
-            }
-            
-            gameState.coins += autoCoins;
-            saveGameState();
-            updateDisplay();
-        }
-    }, 1000);
-}
-
-// Update Upgrade Buttons State
-function updateUpgradeButtons() {
-    const doubleBtn = document.getElementById('doubleEarnings');
-    const autoBtn = document.getElementById('autoClicker');
-    const tripleBtn = document.getElementById('tripleEarnings');
-    
-    // Double Earnings
-    if (gameState.doubleEarnings) {
-        doubleBtn.disabled = true;
-        doubleBtn.innerText = '✓ Purchased';
-        doubleBtn.style.opacity = '0.6';
-    } else {
-        doubleBtn.disabled = gameState.coins < upgradeCosts.double;
-    }
-    
-    // Auto Clicker
-    if (gameState.autoClicker) {
-        autoBtn.innerText = `Level ${gameState.autoClickerLevel}`;
-        autoBtn.style.opacity = '1';
-    } else {
-        autoBtn.disabled = gameState.coins < upgradeCosts.auto;
-    }
-    
-    // Triple Earnings
-    if (gameState.tripleEarnings) {
-        tripleBtn.disabled = true;
-        tripleBtn.innerText = '✓ Purchased';
-        tripleBtn.style.opacity = '0.6';
-    } else {
-        tripleBtn.disabled = gameState.coins < upgradeCosts.triple;
-    }
-}
-
-// Show Notification
-function showNotification(message) {
-    const notification = document.createElement('div');
-    notification.style.cssText = `
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        background: linear-gradient(135deg, #fbbf24, #f59e0b);
-        color: black;
-        padding: 20px 40px;
-        border-radius: 10px;
-        font-weight: bold;
-        font-size: 1.2em;
-        z-index: 1000;
-        animation: slideDown 0.5s ease-out;
-    `;
-    notification.innerText = message;
-    
-    document.body.appendChild(notification);
-    
-    setTimeout(() => {
-        notification.style.animation = 'fadeOut 0.5s ease-out forwards';
-        setTimeout(() => notification.remove(), 500);
-    }, 2000);
-}
-
-// Save Game State
-function saveGameState() {
-    localStorage.setItem("coins", gameState.coins);
-    localStorage.setItem("coinsPerClick", gameState.coinsPerClick);
-    localStorage.setItem("doubleEarnings", gameState.doubleEarnings);
-    localStorage.setItem("tripleEarnings", gameState.tripleEarnings);
-    localStorage.setItem("autoClicker", gameState.autoClicker);
-    localStorage.setItem("autoClickerLevel", gameState.autoClickerLevel);
-}
-
-// Load Upgrade States
-function loadUpgradeStates() {
-    updateUpgradeButtons();
-}
-
-// Reset Game
-function resetGame() {
-    if (confirm('Are you sure you want to reset your game? This cannot be undone!')) {
-        gameState = {
-            coins: 0,
-            coinsPerClick: 1,
-            doubleEarnings: false,
-            tripleEarnings: false,
-            autoClicker: false,
-            autoClickerLevel: 0,
-        };
-        
-        localStorage.clear();
-        updateDisplay();
-        showNotification('Game Reset!');
-    }
-}
-
-// Add fadeOut animation
+// Add floating animation CSS
 const style = document.createElement('style');
 style.textContent = `
-    @keyframes fadeOut {
-        from {
+    @keyframes floatUp {
+        0% {
             opacity: 1;
-            transform: translate(-50%, -50%);
+            transform: translate(-50%, 0);
         }
-        to {
+        100% {
             opacity: 0;
-            transform: translate(-50%, -60%);
+            transform: translate(-50%, -60px);
         }
     }
 `;
 document.head.appendChild(style);
+
+// Upgrade button
+document.querySelectorAll('.btn')[0].addEventListener('click', function() {
+    if (gameData.coins >= gameData.upgradeCost) {
+        gameData.coins -= gameData.upgradeCost;
+        gameData.upgradeLevel++;
+        gameData.coinsPerClick++;
+        gameData.upgradeCost = Math.floor(gameData.upgradeCost * 1.15);
+        updateDisplay();
+        alert('✅ Upgraded! Now earning: ' + gameData.coinsPerClick + ' coins per click\\nNext upgrade cost: ' + gameData.upgradeCost);
+    } else {
+        alert('❌ Not enough coins! Need: ' + gameData.upgradeCost);
+    }
+});
+
+// Referral button
+document.querySelectorAll('.btn')[1].addEventListener('click', function() {
+    const referralLink = window.location.href + '?ref=' + btoa('akbars123950');
+    alert('📢 Your Referral Link:\\n\\n' + referralLink + '\\n\\nShare to earn bonus coins!');
+    // Copy to clipboard
+    navigator.clipboard.writeText(referralLink);
+});
+
+// Wallet button
+document.querySelectorAll('.btn')[2].addEventListener('click', function() {
+    showWalletInfo();
+});
+
+// Show wallet info
+function showWalletInfo() {
+    const info = `
+💰 WALLET INFO
+================
+Coins: ${formatNumber(gameData.coins)} AKC
+Total Earned: ${formatNumber(gameData.totalEarned)} AKC
+Per Click: ${gameData.coinsPerClick} AKC
+Per Second: ${gameData.coinsPerSecond} AKC
+Auto Miners: ${gameData.autoMiners}
+Upgrade Level: ${gameData.upgradeLevel}
+Referral Bonus: ${gameData.referralBonus} AKC
+    `;
+    alert(info);
+}
+
+// Auto mining function
+function autoMine() {
+    if (gameData.autoMiners > 0) {
+        gameData.coins += gameData.coinsPerSecond;
+        gameData.totalEarned += gameData.coinsPerSecond;
+        updateDisplay();
+    }
+}
+
+// Auto mine every second
+setInterval(autoMine, 1000);
+
+// Save game data to localStorage
+function saveGameData() {
+    localStorage.setItem('akashCoins', gameData.coins);
+    localStorage.setItem('coinsPerClick', gameData.coinsPerClick);
+    localStorage.setItem('coinsPerSecond', gameData.coinsPerSecond);
+    localStorage.setItem('upgradeCost', gameData.upgradeCost);
+    localStorage.setItem('upgradeLevel', gameData.upgradeLevel);
+    localStorage.setItem('autoMiners', gameData.autoMiners);
+    localStorage.setItem('autoMinerCost', gameData.autoMinerCost);
+    localStorage.setItem('referralBonus', gameData.referralBonus);
+    localStorage.setItem('totalEarned', gameData.totalEarned);
+}
+
+// Bottom menu navigation
+document.querySelectorAll('.menu a')[0].addEventListener('click', (e) => {
+    e.preventDefault();
+    alert('🏠 Home page - Mining game');
+});
+
+document.querySelectorAll('.menu a')[1].addEventListener('click', (e) => {
+    e.preventDefault();
+    alert('⚡ Mining stats:\\nTotal mined: ' + formatNumber(gameData.totalEarned) + ' AKC');
+});
+
+document.querySelectorAll('.menu a')[2].addEventListener('click', (e) => {
+    e.preventDefault();
+    alert('👥 Friends feature coming soon!\\nInvite friends and earn bonus coins.');
+});
+
+document.querySelectorAll('.menu a')[3].addEventListener('click', (e) => {
+    e.preventDefault();
+    alert('👤 Profile:\\nLevel: ' + gameData.upgradeLevel + '\\nAuto Miners: ' + gameData.autoMiners);
+});
+
+// Initial display update
+updateDisplay();
+
+// Save game data every 5 seconds
+setInterval(saveGameData, 5000);
+
+console.log('🎮 AKASH COIN Game Loaded!');
