@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AKASH COIN v2.0</title>
+
+<link rel="stylesheet" href="styles.css">
+
+<style>
+body{
+margin:0;
+font-family:Arial,sans-serif;
+background:linear-gradient(135deg,#050816,#111827);
+color:white;
+}
+
+.top{
+padding:20px;
+text-align:center;
+}
+
+.logo{
+width:140px;
+animation:spin 8s linear infinite;
+}
+
+@keyframes spin{
+100%{transform:rotate(360deg);}
+}
+
+h1{
+font-size:35px;
+color:gold;
+margin-top:10px;
+}
+
+.balance{
+font-size:45px;
+font-weight:bold;
+margin:20px;
+}
+
+.coin{
+width:220px;
+cursor:pointer;
+transition:.2s;
+}
+
+.coin:active{
+transform:scale(.9);
+}
+
+.center{
+text-align:center;
+}
+
+.btn{
+background:gold;
+color:black;
+padding:15px;
+border:none;
+border-radius:15px;
+font-size:18px;
+width:90%;
+margin:10px;
+}
+
+.menu{
+position:fixed;
+bottom:0;
+width:100%;
+display:flex;
+justify-content:space-around;
+background:#0f172a;
+padding:15px;
+}
+
+.menu a{
+color:white;
+text-decoration:none;
+font-size:18px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="top">
+
+<img src="logo.png" class="logo">
+
+<h1>AKASH COIN</h1>
+
+<div class="balance" id="coins">0 AKC</div>
+
+</div>
+
+<div class="center">
+
+<img src="logo.png" class="coin" onclick="mineCoin()">
+
+<br>
+
+<button class="btn">
+🚀 Upgrade
+</button>
+
+<button class="btn">
+🎁 Referral
+</button>
+
+<button class="btn">
+💰 Wallet
+</button>
+
+</div>
+
+<div class="menu">
+
+<a href="#">🏠 Home</a>
+
+<a href="#">⚡ Mine</a>
+
+<a href="#">👥 Friends</a>
+
+<a href="#">👤 Profile</a>
+
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
