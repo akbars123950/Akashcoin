@@ -33,12 +33,19 @@ body {
   padding: 16px 20px;
   text-align: center;
   border-bottom: 1px solid #374151;
+  position: relative;
 }
 
 .header h1 {
   font-size: 24px;
   color: #fbbf24;
   margin-bottom: 8px;
+  animation: glow 2s ease-in-out infinite;
+}
+
+@keyframes glow {
+  0%, 100% { text-shadow: 0 0 10px rgba(251, 191, 36, 0.5); }
+  50% { text-shadow: 0 0 20px rgba(251, 191, 36, 1); }
 }
 
 .header p {
@@ -65,6 +72,18 @@ body {
   text-align: center;
   margin-bottom: 24px;
   box-shadow: 0 8px 16px rgba(251, 191, 36, 0.2);
+  animation: slideDown 0.6s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .balance-card .label {
@@ -79,6 +98,12 @@ body {
   color: black;
   font-weight: 700;
   margin-bottom: 4px;
+  animation: numberPulse 0.5s ease;
+}
+
+@keyframes numberPulse {
+  0% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
 .balance-card .currency {
@@ -101,10 +126,11 @@ body {
   cursor: pointer;
   padding: 20px;
   transition: transform 0.1s ease;
+  position: relative;
 }
 
 .coin-button:active {
-  transform: scale(0.95);
+  transform: scale(0.92);
 }
 
 .coin-icon {
@@ -118,12 +144,72 @@ body {
   justify-content: center;
   font-size: 120px;
   margin-bottom: 16px;
+  animation: coinFloat 3s ease-in-out infinite;
+  position: relative;
+}
+
+@keyframes coinFloat {
+  0%, 100% {
+    transform: translateY(0px);
+    box-shadow: 0 12px 24px rgba(251, 191, 36, 0.3);
+  }
+  50% {
+    transform: translateY(-10px);
+    box-shadow: 0 20px 40px rgba(251, 191, 36, 0.5);
+  }
+}
+
+.coin-icon::before {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid rgba(251, 191, 36, 0.3);
+  animation: coinPulse 2s ease-in-out infinite;
+}
+
+@keyframes coinPulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.1);
+    opacity: 0;
+  }
 }
 
 .per-click {
   font-size: 13px;
   color: #9ca3af;
   margin-top: 12px;
+}
+
+/* Flying Text Animation */
+.flying-text {
+  position: fixed;
+  font-weight: bold;
+  pointer-events: none;
+  z-index: 150;
+  animation: fly-up 1.5s ease-out forwards;
+}
+
+@keyframes fly-up {
+  0% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100px) scale(1.3);
+  }
+}
+
+.flying-text.gold {
+  color: #fbbf24;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.8);
+  font-size: 24px;
 }
 
 /* Tabs */
@@ -153,12 +239,24 @@ body {
 .tab.active {
   background: #fbbf24;
   color: black;
+  animation: tabActivate 0.3s ease;
+}
+
+@keyframes tabActivate {
+  0% { transform: scale(0.95); }
+  100% { transform: scale(1); }
 }
 
 /* Sections */
 .section {
   display: none;
   width: 100%;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .section.active {
@@ -175,6 +273,18 @@ body {
   justify-content: space-between;
   align-items: center;
   border: 1px solid #374151;
+  animation: slideInLeft 0.4s ease;
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .task-info h3 {
@@ -200,13 +310,20 @@ body {
 }
 
 .reward:active {
-  transform: scale(0.95);
+  transform: scale(0.92);
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .reward.completed {
   background: #6b7280;
   cursor: not-allowed;
   color: #d1d5db;
+  animation: pulseGreen 0.5s ease;
+}
+
+@keyframes pulseGreen {
+  0%, 100% { background: #10b981; }
+  50% { background: #059669; }
 }
 
 /* Bottom Menu */
@@ -242,6 +359,12 @@ body {
 
 .menu-item.active {
   color: #fbbf24;
+  animation: menuBounce 0.6s ease;
+}
+
+@keyframes menuBounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
 }
 
 .menu-item:active {
@@ -259,18 +382,45 @@ body {
   padding: 12px 16px;
   border-radius: 8px;
   font-weight: 600;
-  animation: slideIn 0.3s ease;
+  animation: bounceIn 0.5s ease;
   z-index: 200;
+  box-shadow: 0 8px 16px rgba(251, 191, 36, 0.4);
 }
 
-@keyframes slideIn {
-  from {
-    transform: translateY(-100px);
+@keyframes bounceIn {
+  0% {
+    transform: translateY(-100px) scale(0.8);
     opacity: 0;
   }
-  to {
-    transform: translateY(0);
+  50% {
+    transform: translateY(10px) scale(1.05);
+  }
+  100% {
+    transform: translateY(0) scale(1);
     opacity: 1;
+  }
+}
+
+/* Particle Effect */
+.particle {
+  position: fixed;
+  pointer-events: none;
+  z-index: 140;
+}
+
+.particle-emoji {
+  font-size: 24px;
+  animation: particleFloat 1s ease-out forwards;
+}
+
+@keyframes particleFloat {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--tx), var(--ty)) scale(0.5);
   }
 }
 
@@ -281,6 +431,40 @@ body {
     padding-right: max(0px, env(safe-area-inset-right));
     padding-bottom: max(0px, env(safe-area-inset-bottom));
   }
+}
+
+/* Combo Counter */
+.combo-counter {
+  position: fixed;
+  top: 80px;
+  right: 20px;
+  background: linear-gradient(135deg, #ff6b6b, #ff0000);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 20px;
+  font-weight: bold;
+  z-index: 101;
+  animation: comboAppear 0.3s ease;
+}
+
+@keyframes comboAppear {
+  from {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.combo-counter.high {
+  animation: comboPulse 0.4s ease infinite;
+}
+
+@keyframes comboPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.1); }
 }
 </style>
 </head>
@@ -295,6 +479,11 @@ body {
     <p>Telegram Bot Coin Clicker</p>
   </div>
 
+  <!-- Combo Counter -->
+  <div id="comboCounter" class="combo-counter" style="display:none;">
+    🔥 Combo: <span id="comboCount">1</span>x
+  </div>
+
   <!-- Main Content -->
   <div class="content">
     
@@ -307,7 +496,7 @@ body {
 
     <!-- Clicker -->
     <div class="clicker-section">
-      <button class="coin-button" onclick="mineCoin()">
+      <button class="coin-button" onclick="mineCoin(event)">
         <div class="coin-icon">💰</div>
       </button>
       <div class="per-click">Har bir bosish: <strong id="perClick">1</strong> AKC</div>
@@ -415,6 +604,9 @@ let userData = {
   referrals: localStorage.getItem('akashReferrals') ? JSON.parse(localStorage.getItem('akashReferrals')) : []
 };
 
+let comboCount = 0;
+let comboTimeout = null;
+
 function updateUI() {
   document.getElementById('totalBalance').textContent = userData.balance.toLocaleString();
   document.getElementById('perClick').textContent = userData.perClick;
@@ -422,17 +614,94 @@ function updateUI() {
   localStorage.setItem('akashPerClick', userData.perClick);
 }
 
-function mineCoin() {
+function mineCoin(event) {
   userData.balance += userData.perClick;
+  comboCount++;
+  
   updateUI();
   
-  // Animatsiya
-  const notification = document.createElement('div');
-  notification.className = 'notification';
-  notification.textContent = '+' + userData.perClick + ' AKC';
-  document.body.appendChild(notification);
+  // Update combo counter
+  updateCombo();
   
-  setTimeout(() => notification.remove(), 1500);
+  // Flying text animation
+  createFlyingText(event, userData.perClick);
+  
+  // Particle effects
+  createParticles(event);
+  
+  // Haptic feedback (if available)
+  if (navigator.vibrate) {
+    navigator.vibrate(20);
+  }
+}
+
+function createFlyingText(event, amount) {
+  const rect = event.target.closest('.coin-button').getBoundingClientRect();
+  const text = document.createElement('div');
+  text.className = 'flying-text gold';
+  text.textContent = '+' + amount + ' AKC';
+  text.style.left = (rect.left + rect.width / 2) + 'px';
+  text.style.top = (rect.top + rect.height / 2) + 'px';
+  document.body.appendChild(text);
+  
+  setTimeout(() => text.remove(), 1500);
+}
+
+function createParticles(event) {
+  const rect = event.target.closest('.coin-button').getBoundingClientRect();
+  const centerX = rect.left + rect.width / 2;
+  const centerY = rect.top + rect.height / 2;
+  
+  const emojis = ['💰', '✨', '⭐', '🌟'];
+  
+  for (let i = 0; i < 8; i++) {
+    const particle = document.createElement('div');
+    particle.className = 'particle';
+    const emoji = emojis[Math.floor(Math.random() * emojis.length)];
+    const span = document.createElement('span');
+    span.className = 'particle-emoji';
+    span.textContent = emoji;
+    
+    const angle = (i / 8) * Math.PI * 2;
+    const velocity = 100;
+    const tx = Math.cos(angle) * velocity;
+    const ty = Math.sin(angle) * velocity;
+    
+    span.style.setProperty('--tx', tx + 'px');
+    span.style.setProperty('--ty', ty + 'px');
+    
+    particle.appendChild(span);
+    particle.style.left = centerX + 'px';
+    particle.style.top = centerY + 'px';
+    
+    document.body.appendChild(particle);
+    
+    setTimeout(() => particle.remove(), 1000);
+  }
+}
+
+function updateCombo() {
+  clearTimeout(comboTimeout);
+  
+  const counter = document.getElementById('comboCounter');
+  const countSpan = document.getElementById('comboCount');
+  
+  if (comboCount === 1) {
+    counter.style.display = 'block';
+  }
+  
+  countSpan.textContent = comboCount;
+  
+  if (comboCount > 5) {
+    counter.classList.add('high');
+    showNotification('🔥 COMBO x' + comboCount + '!');
+  }
+  
+  comboTimeout = setTimeout(() => {
+    comboCount = 0;
+    counter.classList.remove('high');
+    counter.style.display = 'none';
+  }, 2000);
 }
 
 function switchTab(tabName) {
@@ -460,15 +729,15 @@ function buyUpgrade(type, cost) {
     else if (type === 'premium') userData.perClick += 5;
     
     updateUI();
-    showNotification('Upgrade tayyorlandi! 🎉');
+    showNotification('✨ Upgrade tayyorlandi! 🎉');
   } else {
-    showNotification('Yetarli AKC yo\'q! ❌');
+    showNotification('❌ Yetarli AKC yo\'q!');
   }
 }
 
 function completeTask(taskName, button) {
   if (userData.completedTasks.includes(taskName)) {
-    showNotification('Bu vazifani allaqachon amalga oshirdingiz! ✓');
+    showNotification('✓ Bu vazifani allaqachon amalga oshirdingiz!');
     return;
   }
   
@@ -492,7 +761,7 @@ function completeTask(taskName, button) {
 function copyReferralLink() {
   const link = 'https://t.me/share/url?url=' + window.location.href + '&text=AKASH%20COIN%20-%20Pul%20qazanish%20bo%27yicha%20eng%20yaxshi%20ilova!';
   navigator.clipboard.writeText(link);
-  showNotification('Havola nusxalandi! 📋');
+  showNotification('📋 Havola nusxalandi!');
 }
 
 function showNotification(text) {
@@ -500,6 +769,10 @@ function showNotification(text) {
   notification.className = 'notification';
   notification.textContent = text;
   document.body.appendChild(notification);
+  
+  if (navigator.vibrate) {
+    navigator.vibrate([10, 20, 10]);
+  }
   
   setTimeout(() => notification.remove(), 2000);
 }
