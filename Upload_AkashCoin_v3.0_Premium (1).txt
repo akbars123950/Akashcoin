@@ -1,0 +1,11 @@
+Upload AkashCoin v3.0 Premium
+
+-   New premium UI
+-   Gold 3D AKASH COIN design
+-   Modern animations
+-   Telegram Mini App optimized
+-   Responsive mobile layout
+-   Improved mining system
+-   Upgrade and referral sections
+-   Wallet and profile pages
+-   Performance optimization
