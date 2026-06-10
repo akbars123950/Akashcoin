@@ -466,6 +466,42 @@ body {
   0%, 100% { transform: scale(1); }
   50% { transform: scale(1.1); }
 }
+
+/* Copy Button Style */
+.copy-container {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+}
+
+.copy-input {
+  flex: 1;
+  background: #1f2937;
+  color: #fbbf24;
+  border: 1px solid #374151;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.copy-btn {
+  background: #fbbf24;
+  color: black;
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.copy-btn:active {
+  transform: scale(0.92);
+}
 </style>
 </head>
 
@@ -578,7 +614,10 @@ body {
           <h3>👥 Referral Dastur</h3>
           <p>Do'stni taklif et va 20% qazanch oling</p>
         </div>
-        <button class="reward" onclick="copyReferralLink()">📋 Nusxala</button>
+        <div class="copy-container">
+          <input type="text" id="refLink" class="copy-input" readonly>
+          <button class="copy-btn" onclick="copyReferralLink()">📋</button>
+        </div>
       </div>
 
       <div id="friendsList" style="margin-top: 16px;"></div>
@@ -620,16 +659,10 @@ function mineCoin(event) {
   
   updateUI();
   
-  // Update combo counter
   updateCombo();
-  
-  // Flying text animation
   createFlyingText(event, userData.perClick);
-  
-  // Particle effects
   createParticles(event);
   
-  // Haptic feedback (if available)
   if (navigator.vibrate) {
     navigator.vibrate(20);
   }
@@ -759,9 +792,20 @@ function completeTask(taskName, button) {
 }
 
 function copyReferralLink() {
-  const link = 'https://t.me/share/url?url=' + window.location.href + '&text=AKASH%20COIN%20-%20Pul%20qazanish%20bo%27yicha%20eng%20yaxshi%20ilova!';
-  navigator.clipboard.writeText(link);
-  showNotification('📋 Havola nusxalandi!');
+  const refLink = document.getElementById('refLink');
+  refLink.select();
+  navigator.clipboard.writeText(refLink.value);
+  showNotification('📋 Qisqa havola nusxalandi!');
+}
+
+function generateShortLink() {
+  const baseUrl = window.location.href.split('?')[0];
+  const userId = userData.userId || Math.random().toString(36).substr(2, 9);
+  if (!userData.userId) {
+    userData.userId = userId;
+    localStorage.setItem('akashUserId', userId);
+  }
+  return baseUrl + '?ref=' + userId;
 }
 
 function showNotification(text) {
@@ -781,7 +825,19 @@ function showProfile() {
   alert(`👤 PROFIL\n\n💰 Balans: ${userData.balance} AKC\n📊 Bosishda: ${userData.perClick} AKC\n🎁 Bajarilgan vazifalar: ${userData.completedTasks.length}\n👥 Referrallar: ${userData.referrals.length}`);
 }
 
+// Initialize referral link
+function initializeRefLink() {
+  const userId = localStorage.getItem('akashUserId') || Math.random().toString(36).substr(2, 9);
+  localStorage.setItem('akashUserId', userId);
+  userData.userId = userId;
+  
+  const baseUrl = window.location.href.split('?')[0];
+  const shortLink = baseUrl + '?ref=' + userId;
+  document.getElementById('refLink').value = shortLink;
+}
+
 updateUI();
+initializeRefLink();
 </script>
 
 </body>
